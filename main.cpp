@@ -60,12 +60,20 @@ class Expenses
 private:
     std::vector<Expense> exps;
 
+    size_t sumMonth;
+    size_t sum{0};
+
+    const void calc_sum(const int32_t &);
+    const void calc_sum_month(const int16_t &month);
+
 public:
     Expenses();
     ~Expenses();
 
     const void add_expense(const boost_date &, const std::string &, const int32_t &);
     const void print_expenses() const;
+    const void print_summary() const;
+    const void print_summary_date(const int16_t &);
 };
 
 const void Expenses::add_expense(const boost_date &date,
@@ -75,7 +83,9 @@ const void Expenses::add_expense(const boost_date &date,
     Expense exp = Expense(date, description, amount);
 
     exps.push_back(exp);
+    this->calc_sum(exp.get_amount());
 }
+
 const void Expenses::print_expenses() const
 {
     if (exps.empty())
@@ -97,6 +107,32 @@ const void Expenses::print_expenses() const
     }
 };
 
+const void Expenses::print_summary() const
+{
+    std::cout << "Your total expenses: " << sum << "$\n";
+}
+
+inline const void Expenses::calc_sum(const int32_t &amount)
+{
+    sum += amount;
+}
+
+const void Expenses::print_summary_date(const int16_t &month)
+{
+    this->calc_sum_month(month);
+    std::cout << "Your total expenses for " << month << " month: " << this->sumMonth << "$\n";
+}
+
+const void Expenses::calc_sum_month(const int16_t &month)
+{
+    this->sumMonth = 0;
+    for (auto &&el : exps)
+    {
+        if (el.get_date().month().as_number() == month)
+            this->sumMonth += el.get_amount();
+    }
+}
+
 Expenses::Expenses()
 {
 }
@@ -115,6 +151,8 @@ int main(int argc, char const *argv[])
     exps.add_expense(today, "Books", 400);
     exps.add_expense(today, "products", 47);
     exps.print_expenses();
+    exps.print_summary();
+    exps.print_summary_date(9);
 
     return 0;
 }
