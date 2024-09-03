@@ -8,6 +8,8 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "${fileDirname}/expense.cpp",
+                "${fileDirname}/expenses.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
